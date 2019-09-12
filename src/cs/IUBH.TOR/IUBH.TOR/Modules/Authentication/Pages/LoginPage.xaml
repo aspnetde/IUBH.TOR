@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<pages:ContentPageBase
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:IUBH.TOR.Modules.Shared.Pages;assembly=IUBH.TOR"
+    xmlns:local="clr-namespace:IUBH.TOR.Modules.Authentication.Pages;assembly=IUBH.TOR"
+    x:Class="IUBH.TOR.Modules.Authentication.Pages.LoginPage"
+    x:TypeArguments="local:LoginViewModel"
+    Visual="Material"
+    Title="IUBH TOR"
+    BackgroundColor="#F5F5F5">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="30">
+                <Frame VerticalOptions="CenterAndExpand">
+                    <StackLayout Padding="0">
+                        <Image
+                            HeightRequest="102"
+                            HorizontalOptions="Fill"
+                            Source="logo.png" />
+                        <Entry
+                            x:Name="UserNameEntry"
+                            Placeholder="User name"
+                            ReturnType="Next"
+                            TabIndex="0"
+                            Margin="0, 0, 0, 10"
+                            BackgroundColor="White"
+                            PlaceholderColor="#757575"
+                            Completed="OnEntryCompleted"
+                            Text="{Binding UserName}">
+                            <Entry.Keyboard>
+                                <Keyboard x:FactoryMethod="Create">
+                                    <x:Arguments>
+                                        <KeyboardFlags>None</KeyboardFlags>
+                                    </x:Arguments>
+                                </Keyboard>
+                            </Entry.Keyboard>
+                        </Entry>
+                        <Entry
+                            x:Name="PasswordEntry"
+                            Placeholder="Password"
+                            IsPassword="true"
+                            ReturnType="Done"
+                            TabIndex="1"
+                            Margin="0, 0, 0, 10"
+                            BackgroundColor="White"
+                            Completed="OnEntryCompleted"
+                            PlaceholderColor="#757575"
+                            Text="{Binding Password}" />
+                        <Button
+                            Text="Sign in"
+                            Command="{Binding SignInCommand}"
+                            BackgroundColor="#3B8E90" />
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</pages:ContentPageBase>

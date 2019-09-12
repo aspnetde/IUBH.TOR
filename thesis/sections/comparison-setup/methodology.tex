@@ -1,0 +1,30 @@
+\subsection{Methodology}
+
+The comparison of programming languages of the same type alone would be a challenging task to tackle. Comparing different languages that propagate different programming paradigms is even more challenging. Especially when there is little agreement on what those paradigms precisely characterize (as seen previously in regards to functional programming).
+
+Also, it is questionable what should be compared: The size of the final executables? Memory footprint? The number of assemblies, namespaces, or types? Those quantitative measurements, which provide a rather narrow technical glimpse towards the result, do not seem to be exceptionally insightful in the context of this thesis.
+
+\newpage
+\textbf{Software Quality Models}
+
+Another angle is taken by sophisticated software quality models, which exist in various forms like Boehm (\cite{boehm_quantitative_1976}), McCall (\cite{mccall_factors_1977}), FURPS (\cite{grady_successfully_1994}), or ISO/IEC 25010:2011 (\cite{international_organization_for_standardization_iso/iec_2011}), just to name a few. All of those are trying to define characteristics important to software quality. 
+
+\cite{deissenboeck_software_2009} propose to classify such quality models by purpose: "Although definition, assessment and prediction of quality are different purposes, they are obviously not independent of each other: It is hard to assess quality without knowing what it actually constitutes and equally hard to predict quality without knowing how to assess it." They also note that the ideal model, which would cover the definition, assessment, and prediction, does not exist (yet): "Existing quality models do not necessarily cover all aspects equally well. The ISO 9126, for example, defines quality but gives no hints for assessing it \dots". 
+
+In particular, ISO/IEC 25010:2011 seems to be a reasonable choice, for example, to define quality criteria for software to be purchased (e.g., \cite{chua_applying_2004}). But it does not seem to be a good choice to evaluate two competing programming paradigms in the context of the case study of this thesis. Especially under the aspect that requirements, implementation, and evaluation must be carried out by the same person - the author of this thesis. Instead, it seems more appropriate to examine the development approach itself from different angles.
+
+\textbf{Cognitive Dimensions of Notations}
+
+A method that meets this requirement is provided by the "Cognitive Dimensions of Notations" (CDs) framework. It does not enforce an exclusive look at the product or the formal process, but instead takes the perspective of human-computer interaction (HCI) and therefore allows a holistic look at the two programming approaches at hand:
+
+"'Cognitive dimensions' are features of computer languages considered purely as information structures or notations. They therefore apply to many types of language—interactive or programming, high or low level, procedural or declarative, special purpose or general purpose. They are 'cognitive' dimensions because they control how (or whether) the preferred cognitive strategy for design-like tasks can be adopted \dots" (\cite{green_cognitive_1989})
+
+Initially introduced by T. RG Green in 1989 with the first five dimensions, \cite{green_usability_1996} proposed an extended set of 14 dimensions, which was detailed further by \cite{blackwell_notational_2003}. In their systematic literature review on the matter, \cite{hadhrawi_systematic_2017} found 1.638 unique articles citing the CDs framework. 
+
+In the context of programming languages, methodologies, and tools the CDs framework has, for example, been used to evaluate parallel programming features of programming languages (\cite{sadowski_heuristic_2011}), to evaluate the usability of a class library (\cite{clarke_using_2003}), and to compare object-oriented and functional programming for GUI programming (\cite{kiss_comparison_2014}).
+
+What seems to make the CDs framework particularly suitable for the task of this thesis is that its dimensions are not strict guidelines but discussion tools. Non-specialists can use those tools in HCI because they avoid "death by detail." The framework further works task-specific, concentrating on the processes and activities rather than the final product (\cite{blackwell_notational_2003}).
+
+Nine of the "official" 14 dimensions are chosen to evaluate the two IUBH TOR implementations: abstraction, visibility, hidden dependencies, hard mental operations, closeness of mapping, error-proneness, diffuseness, secondary notation, and progressive evaluation (see the following sections for a detailed explanation of each of those dimensions). 
+
+In addition, as the 10th dimension, "accessibility" is being newly introduced for the sake of the particular comparison subject to this thesis. It covers aspects of "getting started" with the development approaches and takes a look at the maturity of tooling and ecosystem. Topics that are essential for deciding on whether an investment in functional programming for mobile app development may be justified or not.

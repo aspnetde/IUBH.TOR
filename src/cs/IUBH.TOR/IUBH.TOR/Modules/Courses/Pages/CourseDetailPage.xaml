@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<pages:ContentPageBase
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:IUBH.TOR.Modules.Shared.Pages;assembly=IUBH.TOR"
+    xmlns:local="clr-namespace:IUBH.TOR.Modules.Courses.Pages;assembly=IUBH.TOR"
+    xmlns:converters="clr-namespace:IUBH.TOR.Modules.Courses.Pages.Converters;assembly=IUBH.TOR"
+    x:Class="IUBH.TOR.Modules.Courses.Pages.CourseDetailPage"
+    x:TypeArguments="local:CourseDetailViewModel"
+    Visual="Material"
+    Title="{Binding Title}"
+    BackgroundColor="#F5F5F5">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="SlateGray" />
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="Margin" Value="0, 20, 0, 0" />
+            </Style>
+            <converters:HideEmptyDataConverter x:Key="hideWhenEmpty" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView>
+            <Frame Margin="15, 15, 15, 15" VerticalOptions="Start">
+                <StackLayout>
+                    <Label
+                        Text="Module"
+                        Margin="0, 0, 0, 0"
+                        Style="{StaticResource TitleStyle}"
+                        IsVisible="{Binding Module, Converter={StaticResource hideWhenEmpty}}" />
+                    <Label
+                        Text="{Binding Module }"
+                        IsVisible="{Binding Module, Converter={StaticResource hideWhenEmpty}}" />
+
+                    <Label
+                        Text="Status"
+                        Style="{StaticResource TitleStyle}"
+                        IsVisible="{Binding Status, Converter={StaticResource hideWhenEmpty}}" />
+                    <Label
+                        Text="{Binding Status }"
+                        IsVisible="{Binding Status, Converter={StaticResource hideWhenEmpty}}" />
+
+                    <Label
+                        Text="Grade"
+                        Style="{StaticResource TitleStyle}"
+                        IsVisible="{Binding Grade, Converter={StaticResource hideWhenEmpty}}" />
+                    <Label 
+                        Text="{Binding Grade }"
+                        IsVisible="{Binding Grade, Converter={StaticResource hideWhenEmpty}}"/>
+
+                    <Label 
+                        Text="Rating" 
+                        Style="{StaticResource TitleStyle}"
+                        IsVisible="{Binding Rating, Converter={StaticResource hideWhenEmpty}}"/>
+                    <Label
+                        Text="{Binding Rating }"
+                        IsVisible="{Binding Rating, Converter={StaticResource hideWhenEmpty}}"/>
+
+                    <Label
+                        Text="Credits"
+                        Style="{StaticResource TitleStyle}"
+                        IsVisible="{Binding Credits, Converter={StaticResource hideWhenEmpty}}" />
+                    <Label
+                        Text="{Binding Credits }"
+                        IsVisible="{Binding Credits, Converter={StaticResource hideWhenEmpty}}" />
+
+                    <Label 
+                        Text="Attempts" 
+                        Style="{StaticResource TitleStyle}" 
+                        IsVisible="{Binding Attempts, Converter={StaticResource hideWhenEmpty}}"/>
+                    <Label 
+                        Text="{Binding Attempts }"
+                        IsVisible="{Binding Attempts, Converter={StaticResource hideWhenEmpty}}"/>
+
+                    <Label 
+                        Text="Exam Date" 
+                        Style="{StaticResource TitleStyle}"
+                        IsVisible="{Binding ExamDate, Converter={StaticResource hideWhenEmpty}}"/>
+                    <Label
+                        Text="{Binding ExamDate }"
+                        IsVisible="{Binding ExamDate, Converter={StaticResource hideWhenEmpty}}"/>
+
+                    <Label 
+                        Text="Last Update"
+                        Style="{StaticResource TitleStyle}"
+                        IsVisible="{Binding LastUpdate, Converter={StaticResource hideWhenEmpty}}"/>
+                    <Label 
+                        Text="{Binding LastUpdate }"
+                        IsVisible="{Binding LastUpdate, Converter={StaticResource hideWhenEmpty}}"/>
+                </StackLayout>
+            </Frame>
+        </ScrollView>
+    </ContentPage.Content>
+</pages:ContentPageBase>

@@ -1,0 +1,79 @@
+\subsection{Functional programming in C\#}
+
+While F\# is a functional language that can be used in an imperative and object-oriented style, C\# is often claimed to work the other way around: As an imperative and object-oriented language, that can also be used functionally. Both F\# and C\# had some influence on each other over the years. While the work on generics (\cite{kennedy_design_2001}) lead to the creation of F\#, things like "var" (C\# 3), "async/await" (C\# 5), tuples, pattern matching (C\# 7), and non-null pointers (C\# 8) have been heavily influenced by F\# (\cite[33]{syme_early_2018}). C\# developers are also used to other functional techniques, especially LINQ with its heavy usage of lambda expressions (\cite{bierman_lost_2007}; \cite[6]{meijer_world_2011}), and extension methods (\cite{biczo_runtime_2009}).
+
+C\# supports various functional aspects so that it may be worth to take a glance at the previously introduced core fundamentals of functional programming from its perspective.
+
+\textbf{Immutability}
+
+The .NET BCL offers a set of immutable collections (\cite{brais_immutable_2017}). Beyond that, most things are mutable by default in C\#, except for simple value types and strings. While it is possible to design, for example, classes to have read-only members only, a built-in copy and update mechanism is missing.
+
+\begin{listing}[H]
+\caption{C\# Immutability}
+\begin{minted}{csharp}
+public class User
+{
+    public string FirstName { get; }
+    public string LastName { get; }
+
+    public User(string firstName, string lastName)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+    }
+
+    public User WithFirstName(string firstName) => new User(firstName, LastName);
+    public User WithLastName(string lastName) => new User(FirstName, lastName);
+}
+
+var user = new User("Jane", "Doe"); // Jane Doe
+user = user.WithFirstName("Janet"); // Janet Doe
+\end{minted}
+\end{listing}
+
+The sample shows how to implement copy and update manually. However, this will only last until a type is used that is not under control by the developer. Because for third-party types immutability cannot be ensured. But there are, in fact, alternative approaches. \cite[173]{sturm_functional_2011}, for example, proposes a technique he calls automatic cloning. It is also possible to serialize an object and to deserialize it to retrieve a copy and avoid modifying the original. 
+
+\textbf{Expressions}
+
+Compared to F\#, where everything is an expression, the case for C\# is fundamentally different. Usually, a lot of statements dominate the picture, leading to an imperative style applied by most developers. However, it is possible to use expressions over statements for a lot of cases in C\#, too.
+
+\begin{listing}[H]
+\caption{C\# Expressions}
+\begin{minted}{csharp}
+int Add(int x, int y) => x + y;
+int z = Add(1, 2);
+
+bool equals1 = z == 3; // -> true
+bool equals2 = z == z; // -> true
+bool equals3 = z == Add(1, 2); // -> true
+bool equals4 = Add(1, 2) == z; // -> true
+\end{minted}
+\end{listing}
+
+\textbf{Functions as values}
+
+The sample presented in listing \ref{listing:fp_hof} can be re-written in C\# as follows:
+
+\begin{listing}[H]
+\caption{C\# Higher-order functions}
+\begin{minted}{csharp}
+string FirstName(User u) => u.FirstName;
+string FullName(User u) => $"{u.FirstName} {u.LastName}";
+string SayHello(Func<User, string> formatter, User u) 
+    => $"Hello, {formatter(u)}!";
+
+var user = new User("Jane", "Doe");
+SayHello(FirstName, user); // Hello, Jane!
+SayHello(FullName, user); // Hello, Jane Doe!
+\end{minted}
+\end{listing}
+
+Which shows that functions are first-class citizens in C\# as well. It is possible to pass along static functions, class members, or even local functions.
+
+\textbf{Pure functions}
+
+In terms of purity, C\# offers the same (dis)comfort as F\#. Pure functions can be used, but there is no way to actually enforce purity on them.
+
+\textbf{Summary}
+
+As shown, C\# supports some important functional concepts. In direct comparison to F\#, however, it suffers, from some limitations at type inference, the absence of data types like discriminated unions, and especially much boilerplate code that has to be written in order to achieve immutability and to enable structural equality comparisons. \cite[216]{buonanno_functional_2018} even suggests C\# developers to consider to define their types in F\# rather than C\# in order to get rid of those limitations.

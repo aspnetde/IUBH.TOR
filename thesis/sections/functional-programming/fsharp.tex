@@ -1,0 +1,196 @@
+\subsection{F\# – A functional-first .NET language}
+
+\subsubsection{Overview}
+
+F\# is a strongly-typed so-called general purpose programming language running on the .NET platform. Unless other popular .NET languages such as C\# and VB.NET, it favors a functional-first programming style (\cite{f_software_foundation_about_nodate}).
+
+It has been developed in response to the success of Java "through Project 7, the initial effort to bring multiple languages to .NET, leading to the initiation of .NET Generics in 1998 and F\# in 2002. F\# was one of several responses by advocates of strongly-typed functional programming to the 'object-oriented tidal wave' of the mid-1990s \dots" (\cite{syme_early_2018}).
+
+Published first in 2005, it is today maintained by the F\# Software Foundation, Microsoft, and individual contributors. It is licensed under the MIT License\footnote{https://github.com/dotnet/fsharp/blob/master/License.txt (retrieved August 8, 2019)}.
+
+During its ongoing development, the language has been heavily inspired by OCaml, Haskell, Python, and C\# (\cite{syme_don_2010}). The latter may surprise at first, but in order to stay compatible with code written in other languages of the .NET platform, F\# supports next to functional also object-oriented and imperative programming models (\cite{microsoft_f_2016}).
+
+\subsubsection{Language features}
+
+It would go beyond the scope of this thesis to describe all the language features of F\# in depth. This chapter instead focuses on those parts that provide its unique character and set it apart from C\#.
+
+\textbf{Algebraic data types}
+
+The probably most fundamental building-block of FP with F\# are algebraic data types, among others especially records and discriminated unions.
+
+A record is the product of all of its (named) values. It can be extended by members if needed.
+
+\begin{listing}[H]
+\caption{F\# Record}
+\begin{minted}{fsharp}
+type User = 
+    { FirstName: string
+      LastName: string }
+\end{minted}
+\end{listing}
+
+Whereas a discriminated union represents the sum of different cases. It can be seen as an enumeration which can optionally take a payload for each case. This opens a variety of possibilities, and it makes it especially easy to make invalid states unrepresentable.
+
+\begin{listing}[H]
+\caption{F\# Discriminated union}
+\begin{minted}{fsharp}
+type Session =
+    | Anonymous
+    | Authenticated of user:User
+\end{minted}
+\end{listing}
+
+It also allows the definition of so-called single case discriminated unions which can be used to efficiently work with custom types where otherwise simple types would be necessary and prone to errors.
+
+\begin{listing}[H]
+\caption{F\# Single case discriminated unions}
+\begin{minted}{fsharp}
+type UserId = UserId of int
+type SessionId = SessionId of int
+
+let signIn (userId:UserId) (sessionId:SessionId) =
+    ()
+\end{minted}
+\end{listing}
+
+The \mintinline{fsharp}{signIn} function could also take two integers as parameters. However, by using single case discriminated unions, the compiler can ensure the correct values are passed. When only using integers, the \mintinline{fsharp}{UserId} could easily be mixed up with the \mintinline{fsharp}{SessionId} and vice-versa. This is now impossible.
+
+\textbf{Type inference}
+
+As already mentioned, F\# is a statically-typed language. The F\# compiler is for many cases able to deduce the correct types on its own, based on the usage of a construct.
+
+\begin{listing}[H]
+\caption{F\# Type inference}
+\begin{minted}{fsharp}
+let sayHello name = // string -> string
+    sprintf "Hello, %s!" name
+\end{minted}
+\end{listing}
+
+Furthermore, it supports a feature called automatic generalization. If the type of a parameter cannot be deduced by its usage inside of its function, the parameter becomes generic.
+
+\begin{listing}[H]
+\caption{F\# Automatic generalization}
+\begin{minted}{fsharp}
+let getLast set = // seq<'a> -> 'a
+    set |> Seq.last
+
+[ 1; 2 ] |> getLast // int
+[ 1.0; 2.0 ] |> getLast // float
+\end{minted}
+\end{listing}
+
+\textbf{Immutability}
+
+Immutability is another fundamental building-block. Accordingly, most types in F\# are immutable by default unless explicitly marked otherwise.
+
+\begin{listing}[H]
+\caption{F\# Immutability by default}
+\begin{minted}{fsharp}
+let firstName = "Jane" // Can never be changed
+let mutable lastName = "Doe" // Can be changed
+\end{minted}
+\end{listing}
+
+However, obviously, at some point, changes of information need to be reflected. F\# supports the "copy and update record expression," which enables a developer to do exactly what it says in its name.
+
+\begin{listing}[H]
+\caption{F\# Copy and update record expression}
+\begin{minted}{fsharp}
+let jane = { FirstName = "Jane"; LastName = "Doe" }
+printfn "%s %s" jane.FirstName jane.LastName // "Jane Doe"
+
+let janet = { jane with FirstName = "Janet" } // Copy & Update
+printfn "%s %s" janet.FirstName janet.LastName // Janet Doe
+\end{minted}
+\end{listing}
+
+\textbf{Structural equality}
+
+Another thing that is helpful in many situations is to be able to compare two objects with each other by looking at their shape – or structure – instead of their memory address. While this is easy in any language for value types such as two integers, F\# also enables this for most more complex types such as records out of the box.
+
+\begin{listing}[H]
+\caption{F\# Structural equality}
+\begin{minted}{fsharp}
+let user1 = { FirstName = "John"; LastName = "Doe" }
+let user2 = { FirstName = "John"; LastName = "Doe" }
+
+user1 = user2 // true
+\end{minted}
+\end{listing}
+
+\textbf{Pattern matching}
+
+Pattern matching is a powerful technique that works with a wide range of data types, and especially well with discriminated unions: "Patterns are rules for transforming input data. They are used throughout the F\# language to compare data with a logical structure or structures, decompose data into constituent parts, or extract information from data in various ways." (\cite{microsoft_pattern_2016}).
+
+\begin{listing}[H]
+\caption{F\# Pattern matching}
+\begin{minted}{fsharp}
+let greeting session =
+    match session with
+    | Anonymous -> "Hello!"
+    | Authenticated user -> sprintf "Hello, %s!" user.FirstName
+
+greeting Anonymous // Hello!
+greeting (Authenticated(jane)) // Hello, Jane!
+\end{minted}
+\end{listing}
+
+One additional benefit is that pattern matching in F\# is always exhaustive. That means that as soon as a case is left out, the compiler will respond with a warning. This way not only impossible or redundant cases are being caught, but also missing ones.
+
+\textbf{Optional types}
+
+There have been many decisions with a significant impact on the history of software development. The probably most expensive one was the introduction of null references (\cite{hoare_null_2009}). Working with null would be extraordinarily cumbersome in a language that heavily uses expressions over statements. To be able to represent missing data, F\# uses optional types instead. They allow a callee to explicitly express the absence of information and the caller to handle the situation accordingly.
+
+\begin{listing}[H]
+\caption{F\# Optional types}
+\begin{minted}{fsharp}
+let tryGetAuthenticatedUser session = // Session -> User option
+    match session with
+    | Authenticated user -> Some(user)
+    | Anonymous -> None
+    
+let user = tryGetAuthenticatedUser Anonymous
+match user with // Hey, anonymous!
+| Some user -> sprintf "Hey, %s!" user.FirstName
+| None -> sprintf "Hey, anonymous!"
+\end{minted}
+\end{listing}
+
+\textbf{Pipe operator}
+
+The pipe operator, or more precisely the pipe-forward operator, is heavily used in F\#. It helps "piping together" function calls, by passing the result of one function onto the next. As every function returns a value, this enables an elegant way of expressing data flowing through the program.
+
+\begin{listing}[H]
+\caption{F\# Piping}
+\begin{minted}{fsharp}
+[ 1..9 ]
+|> List.filter (fun x -> x > 5)
+|> List.filter (fun x -> x % 2 = 0)
+|> List.map (fun x -> x * 2)
+|> List.sum // -> 28
+\end{minted}
+\end{listing}
+
+As \cite{syme_early_2018} notes, "the use of the pipeline symbol is particularly important in F\# because type-inference is propagated left-to-right and name resolution occurs based on information available earlier in the program." Although it is attributed to F\# where it was introduced in 2003, it dates back to 1994 when it was originated by Tobias Nipkow (\cite{syme_archeological_2011}).
+
+\textbf{Pure functions}
+
+Like other programming languages, F\# supports side-effect-free pure functions. However, unlike, for example, Haskell with its I/O system\footnote{https://www.haskell.org/tutorial/io.html (retrieved August 8, 2019)}, the F\# compiler does not provide any means to enforce purity (\cite{seemann_functional_2018}). Which, unfortunately, leaves it to the developer to ensure that a function does not unwillingly produce side-effects. On the other hand, this may be helpful in a phase of transitioning existing programming knowledge from the imperative to the functional world, as less restrictiveness at this point lowers the entry-barrier.
+
+\subsubsection{Ecosystem and tooling}
+
+Supported by a wide range of different IDEs\footnote{Examples: Visual Studio, Visual Studio for Mac, JetBrains Rider.} and editors\footnote{Examples: Visual Studio Code, Vim, Emacs, Sublime.}, developers can build and run applications written in F\# today not only on Windows but also on macOS and Linux. The tooling is not as sophisticated, for example, as for C\#, but it supports standard features such as syntax highlighting, code completion, or renaming of symbols, to name a few.  Also, F\# code bases can leverage advanced IDE features such as graphical interfaces for automated test execution.
+
+F\# can also be used as a scripting language through F\# Interactive (\cite{bandt_powerful_2017}). The REPL\footnote{Read–eval–print loop.} allows developers to try things out quickly. So to test a couple of lines of code, this way, it is not necessary to set up and compile a full project.
+
+As part of .NET, F\# applications can make use of the full capacity of the .NET BCL. Also, the F\# Core Library provides a set of functions, collection classes, control constructs for asynchronous programming, and more utilities to support a functional-first development experience.
+
+Besides those core features, it is not only possible to consume C\# code from within the same solution, but also to reference any .NET package as provided mainly through NuGet, the package manager for .NET\footnote{https://www.nuget.org/ (retrieved August 8, 2019)}. For the latter, it does not matter in which language a specific package has been written. So F\# code could even use a library built with VB.NET.
+
+Unfortunately, most of the BCL features and even most of the packages in the .NET world do not feature functional thinking. This inspired the F\# community over the years to build their own functional solutions for a wide range of fields. Some of them, like the build tool FAKE\footnote{https://fake.build/ (retrieved August 8, 2019)} and the alternative dependency manager Paket\footnote{https://fsprojects.github.io/Paket/ (retrieved August 8, 2019)}, are today even used by a broader audience beyond the "inner F\# ecosystem." Whereas others, like type providers\footnote{https://fsharp.github.io/FSharp.Data/ (retrieved August 8, 2019)} or the F\# to JavaScript compiler Fable\footnote{https://fable.io/ (retrieved August 8, 2019)}, are more or less unique to the F\# ecosystem.
+
+Fable is widely seen as the biggest success of the F\# ecosystem so far. Some even consider F\# to be a language with two main compilation targets: .NET and JavaScript.
+
+F\# can also be used in one of the latest industry trends, server-less computing. It is, for example, natively supported by Azure Functions and AWS Lamda.
+

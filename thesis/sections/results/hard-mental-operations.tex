@@ -1,0 +1,37 @@
+\subsubsection{Hard mental operations}
+
+In order to understand the structure of a software system, its components, and their relationship, it is crucial to gain a thorough overview. What mainly means to understand how data flows and is processed within the system. That becomes relevant at the latest when something went wrong, and the problem must be identified. The notation of a system can make this noticeable easy or rather difficult.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Does the notation make it harder or easier to understand the life cycle of the program?
+\item Can errors, if occurred, easily be traced to their sources?
+\end{itemize}
+
+\textbf{Evaluation}
+
+One benefit of the MVU architecture is that due to the unidirectional data-flow, which was described earlier, it is always clear how data moves through the different parts of the application. Whenever a problem occurs, it can be reproduced by applying the same state to the program and then triggering the command that caused it. This can be seen as a major advantage of MVU over different architectures, and especially MVVM.
+
+More generally, the by the F\# compiler enforced order of execution on both a macro and a micro level makes it easier to reason about a whole F\# project as well as a single F\# file. Anything that should be used (functions, types, etcetera) must have been declared before. A good example is the project file of the IUBH TOR core project.
+
+\begin{listing}[H]
+\caption{Extract of an F\# project file}
+\begin{minted}{xml}
+<ItemGroup>
+    <Compile Include="Constants.fs" />
+    <Compile Include="Domain.fs" />
+    ...
+    <Compile Include="CourseLoader.fs" />
+    <Compile Include="LoginPage.fs" />
+    ...
+    <Compile Include="App.fs" />
+</ItemGroup>
+\end{minted}
+\end{listing}
+
+The order of the file entries in IUBH TOR.fsproj defines the order in which the F\# compiler processes those files. That makes, for example, the "root node" always come last – in this case, that is the App.fs file, which is the app's starting point. It also helps to avoid cyclic references: while LoginPage.fs could reference Domain.fs, it is not possible vice-versa. What makes it quite easy to reason about an F\# program in general and a Fabulous program in particular.
+
+Concerning the C\# implementation of IUBH TOR it can be stated that, as \cite{syme_making_2018} note, "XAML is not simple". In order to render the course list page, for example, much knowledge is needed to configure the necessary attributes in the root node alone. There is also some knowledge necessary about converters, platform-specific attributes, and bindings. All of this takes place in an additional layer written in another language than the rest of the application. 
+
+During the development of the C\# version of IUBH TOR, a bug in the Xamarin.Forms list view component was found. When applying the material design visual style, selecting cells from a list was not possible anymore. A workaround could be found. However, some additional C\# code became necessary. In order to fully understand the course list page, reading and understanding not only of the XAML code but also of the C\# code for page and view model became therefore necessary. Also, subsequent defects can be introduced in all of those parts now, which makes them potentially hard to trace down.

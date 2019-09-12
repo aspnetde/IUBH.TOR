@@ -1,0 +1,28 @@
+\subsection{Substituting one language by another}
+
+As outlined before, Xamarin apps can, in theory, be written in any language that compiles to IL and is therefore supported by the .NET platform. F\# is one of those languages, and it is possible to use it as a replacement of the de-facto standard language for Xamarin, C\#. This is shown, for example, by \cite{petzold_writing_2015} and \cite{shackles_you_2017}.
+
+While a developer can benefit from the strengths of F\#, some obvious obstacles might let feel using the language in this context counter-intuitive especially to functional programmers.
+
+First of all, Xamarin works on top of highly object-oriented APIs of iOS and Android, and Xamarin.Forms is designed in an object-oriented way, too. In order to implement, for example, native view controllers (iOS), activities (Android), or pages (Xamarin.Forms), it is necessary to use OOP concepts such as inheritance. Due to the nature of object-oriented APIs, much state-mutation is necessary in order to make things work. When configuring the properties of an UILabel control on iOS, for example, this is done through setting its properties and therefore mutating the label's state.
+
+\begin{listing}[H]
+\caption{A standard iOS view controller written in F\#}
+\begin{minted}{fsharp}
+[<Register("ViewController")>]
+type ViewController(handle : IntPtr) =
+    inherit UIViewController(handle)
+
+override x.ViewDidLoad() = 
+        base.ViewDidLoad()
+        let label = new UILabel(x.View.Frame)
+        label.BackgroundColor <- UIColor.Yellow // Mutation
+        label.Text <- "Hello World" // Mutation
+        x.View.Add label
+        ()
+\end{minted}
+\end{listing}
+
+Those obstacles become even more evident when the app is built with an object-oriented architecture style like MVVM. In order to make bindings between view and view model possible, properties of the view model are being updated, and their state is being changed frequently.
+
+All in all, it can be stated that F\# can be used to replace C\#, but the benefits most likely will not outweigh the disadvantages.

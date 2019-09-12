@@ -1,0 +1,24 @@
+\subsubsection{Hidden dependencies}
+
+In order to get an understanding of the code of a software system, it is not only necessary to identify and classify its components. Learning how those components depend on each other is a crucial part of being prepared for applying significant changes (or sometimes any changes at all). What may sound obvious, often is a complicated issue. Hidden dependencies are not only a source of unexpected problems and newly introduced bugs during maintenance, but also the cause of unforeseen delays and costs. Notations with the ability to avoid those hidden dependencies are therefore having an advantage, whereas the lack of those abilities can be seen as a threat to a project's long-term success.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Are hidden dependencies quickly introduced or even encouraged by the notation?
+\item Does the notation contain mechanisms to avoid hidden dependencies?
+\end{itemize}
+
+\textbf{Evaluation}
+
+Overall, dependencies are clearly modeled in the F\# version of IUBH TOR. However, some functions depend on other non-local functions, e.g. \mintinline{fsharp}{CourseLoader.tryLoadCoursesFromCARE} which calls functions from 4 other modules: \mintinline{fsharp}{Authentication}, \mintinline{fsharp}{CoursePageHtmlDownloader}, \mintinline{fsharp}{CoursePageHtmlParser}, and \mintinline{fsharp}{CourseUpdater}.
+
+That is a trade-off that was deliberately accepted in order to make the \mintinline{fsharp}{tryLoadCoursesFromCARE} function itself more usable. If it was not calling those four functions on its own, its callee would need to know and provide its implementation details. Moreover, even worse, if the function would be used multiple times across the application, any callee would have to know the implementation.
+
+However, that is a design decision that depends highly on the context. In general, following a ports and adapters architectural style in FP with F\# is possible and in many cases useful and encouraged (\cite{seemann_functional_2016}).
+
+One classic example of a hidden dependency in object-oriented systems is the fragile base class problem (\cite{mihailov_fragile_1998}). There are two occurrences of that problem contained in the C\# version of IUBH TOR: \mintinline{csharp}{ContentPageBase<TViewModel>}, and \mintinline{csharp}{ViewModelBase}. 
+
+Both provide fundamental functionality that is being used by different implementations (pages and view models). If one would change that functionality, the compiler would not be able to offer protection from producing unexpected side effects. 
+
+Those effects, therefore, would only occur on runtime. Unfortunately, it is not much that can be done about that besides massive duplication of code, which leads to even worse problems as those that could come along with the fragile base class problem.

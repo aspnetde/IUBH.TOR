@@ -1,0 +1,11 @@
+\subsection{Technical fundamentals}
+
+Xamarin apps are built on top of Mono, "an open source implementation of Microsoft's .NET Framework based on the ECMA standards for C\# and the Common Language Runtime" (\cite{mono_project_cross_2019}). This means developers can leverage a wide range of functionalities provided by the .NET BCL, use third-party libraries, and share application code through different platforms.
+
+Next to so called "Shared Projects", and Portable Class Libraries, which are deprecated, code sharing is achieved through .NET Standard, "a formal specification of .NET APIs that are intended to be available on all .NET implementation" (\cite{microsoft_.net_2019}).
+
+Xamarin apps are first compiled, like any other .NET application, into Intermediate Language (IL) code (\cite{gough_compiling_2001}). Which means that any language that can be compiled to IL can, in theory, be used to build Xamarin apps. Commonly used right now are C\#, F\#, and VB.NET – with C\# being the lead.
+
+Depending on the target platform, different approaches are then taken based on the IL compilation result. On iOS, a technique called ahead of time compilation is applied to compile the IL code to native ARM assembly code. On Android, the IL code is being compiled just in time (JIT compilation) when the app starts (\cite{microsoft_what_2017}). Eventually, Xamarin apps can be seen as full native apps, providing access to platform-specific APIs, including native UI elements.
+
+Many also claim that there is no noticeable difference from a user's perspective in terms of performance. While this may be true for most cases, \cite{willocx_quantitative_2015} have shown that there is a small performance penalty involved compared to purely native apps. This penalty increases when Xamarin.Forms is used (\cite{altexsoft_performance_2017}).

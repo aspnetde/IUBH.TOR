@@ -1,0 +1,56 @@
+\subsubsection{Closeness of mapping}
+
+When building mobile applications, one particularly important part of the job is to create graphical user interfaces, which are often very sophisticated. Usually, those interfaces are built as hierarchical structures that consist of multiple nested layers of information. A button, for example, might consist of a rectangle on layer 0, and a label, containing some text, on layer 1 on top of it. 
+
+Therefore it is helpful when the notation allows modeling elements in a hierarchical way as close to the final structures as possible, instead of forcing the developer to construct them linearly. 
+
+Good examples for those notations in practice might be the Extensible Markup Language (XML) or the JavaScript Object Notation (JSON). Both are widely used in scenarios where hierarchical data needs to be expressed. XML, in particular, has been a research subject for quite some time (e.g., \cite{luyten_developing_2004}) and has become the defacto standard for building user interfaces of all kinds. It is also heavily used in different dialects in the mobile app space on all major platforms (e.g., Storyboards on iOS, AXML on Android, or XAML on Windows).
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Does the notation allow to describe the UI in a way that is close to its hierarchical nature?
+\item Are there characteristics of the notation that appear to be unnatural when building the UI?
+\end{itemize}
+
+\textbf{Evaluation}
+
+Fabulous introduces a custom DSL to build views. The DSL closely maps existing Xamarin.Forms elements and their attributes. That makes it quite easy for developers who are used to the XAML notation to get started. Developers who do not have a background in Xamarin.Forms development can start with the official documentation\footnote{https://docs.microsoft.com/en-us/xamarin/xamarin-forms/ (retrieved August 8, 2019)}, as names of elements and attributes are taken over 1:1.
+
+Thanks to the nature of F\# as a language where (almost) everything is an expression, the view DSL is quite expressive. It allows building the user interface in a natural hierarchical way, as does XAML.
+
+As an additional benefit over XAML, the view can be split up into multiple local or even global functions. That not only reduces deep nestings and repetition, but it also allows to group parts of the view into reusable components. For example, to render a row on the course detail page, the following row function is being used.
+
+\begin{listing}[H]
+\caption{Fabulous: Rendering a row on the course detail page}
+\begin{minted}{fsharp}
+let private row title value margin =
+    View.StackLayout(
+        orientation = StackOrientation.Vertical,
+        isVisible = not (String.IsNullOrWhiteSpace value),
+        children = [
+            View.Label(
+                text = title,
+                margin = margin,
+                fontSize = Constants.UI.FontSize.Small,
+                textColor = Color.SlateGray)
+            View.Label(text = value)])
+\end{minted}
+\end{listing}
+
+With regards to C\#, user interfaces for Xamarin.Forms can be built both programmatically in C\# and in a declarative way in XAML. XAML allows representing the actual view hierarchy almost 1:1 with some minor exceptions. For example, the notation for hiding or showing a frame on the course list, depending on the current state of that list, could be seen as over-complex and even unnatural:
+
+\begin{listing}[H]
+\caption{XAML: Toggling a frame through a binding}
+\begin{minted}{xml}
+<Frame.IsVisible>
+    <Binding Path="State" Converter="{StaticResource courseStateConverter}">
+        <Binding.ConverterParameter>
+            <domain:CourseListState>Loading</domain:CourseListState>
+        </Binding.ConverterParameter>
+    </Binding>
+</Frame.IsVisible>
+\end{minted}
+\end{listing}
+
+If the same view would be built programmatically in C\#, the result would usually contain much procedural code with many temporary variables. However, there do exist ideas and first implementations inspired by MVU which try to enable developers to write user interfaces in C\# in a declarative and hierarchical way\footnote{https://ryandavis.io/declarative-code-based-xamarin-forms-ui/ (retrieved August 8, 2019)}.

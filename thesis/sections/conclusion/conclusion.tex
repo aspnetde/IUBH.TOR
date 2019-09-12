@@ -1,0 +1,34 @@
+\section{Conclusion and future work}
+
+Using the Cognitive Dimensions of Notations framework allowed the thorough evaluation of IUBH TOR, the app developed for this thesis. By evaluating ten dimensions, valuable insights could be gained. From the perspective of the F\# version, those are:
+
+\begin{itemize}
+\item Xamarin.Forms provides a sophisticated abstraction over iOS and Android, which Fabulous leverages to implement its idea of functional programming for app development.
+\item IUBH TOR consists of relatively few files, and all parts of its pages are contained within a single file per page. Which increases the visibility of relevant parts of the application.
+\item Dependencies are generally clearly modeled. However, at some points, compromises were made, and hidden dependencies were deliberately taken into account.
+\item The strict ordering enforced by the F\# compiler makes it generally easy to understand an F\# program, and the uni-directional data flow of MVU helped to understand and debug IUBH TOR.
+\item Views could be built in a natural and concise way. Fabulous closely maps Xamarin.Forms' XAML views and adds some additional benefits, like splitting up re-usable UI parts as functions.
+\item Unit tests could be written easily for every part of IUBH TOR, except for commands. Furthermore, F\# features such as results, options, and built-in immutability helped to prevent different types of defects. However, Fabulous gives up type-safety partly for building views, which can lead to runtime errors.
+\item The resulting code base is much more concise than the C\# version, which contains 2,5x as much code and 3x as many files.
+\item The basic MVU structure needed to be adapted in order to make a nested navigation stack feasible. Further customizations through, e.g., custom renderers, were applied, too.
+\item Fabulous' "Live Update" helped to build the app incrementally. Unfortunately, it only worked reliably for the views, not for other parts. F\# Interactive, however, provided a comprehensive way to "sketch out" things like algorithms or try new libraries.
+\item Comprehensive learning materials for all technologies involved in the case study were available. The tooling for F\# is stable but in terms of refactoring support not as sophisticated as the tooling for C\#. Disregarding the rather small ecosystem of F\#, mature libraries for all kinds of tasks could be found and applied.
+\end{itemize}
+
+As so often, decisions on which technologies to adopt for a new app project must be formulated under a state of uncertainty, given the complex nature of such a call. However, looking at the results of the evaluation, it can be stated that functional programming with F\# – on the Xamarin platform – can be a viable alternative to the established object-oriented approach with C\#.
+
+F\# as a language and FP as a pardigm have proven to keep their promises as advertised. F\# provides first-class FP capabilities while offering seamless integration in the OOP world of iOS, Android, and Xamarin. Tooling in terms of IDEs might in comparison to C\# not be as sophisticated. However, stable and comfortable editing solution were found. Last but not least, the ecosystem in terms of available libraries provided different options for all kinds of tasks. 
+
+Therefore, when Xamarin.Forms is chosen as a platform, the implementation of Fabulous can be recommended. 
+
+For cases where Xamarin.Forms is not an option in the first place, writing views and view models in F\# might not be the best option. Instead, it can be considered to write the UI in C\# and the application's core in F\#. Fortunately, .NET and therefore the Xamarin build system allows mixing C\# and F\# projects within one solution.
+
+This thesis has shown that F\# and FP are suitable for mobile app development in general. However, due to the limited scope, it has only been possible to cover the essential parts of the subject. This may set the foundation for further research.
+
+For example, the higher the level of abstraction, the more critical it is that the library one mainly depends on performs proper resource management, especially on mobile systems. Examining performance characteristics and memory usage of applications built with Fabulous, in particular, could provide valuable insights.
+
+A long-term study accompanying a longer running complex app project realized with Fabulous could also provide essential findings. In particular, evaluating how a large app can be built with MVU and how well that architecture scales for such a case would be interesting to see. Something that could not be covered during the implementation of IUBH TOR because of its small size.
+
+Furthermore, to better understand what might make functional programming more attractive for mobile developers in general (or what might tend to hold them back), user studies could be conducted.
+
+All in all, this subject offers much potential for further research that can contribute to freeing functional programming from its academic niche and to further establish it as a viable alternative to the mostly object-oriented mainstream techniques, which currently dominate the software development industry.

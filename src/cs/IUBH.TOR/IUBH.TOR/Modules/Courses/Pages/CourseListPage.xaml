@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<pages:ContentPageBase
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:IUBH.TOR.Modules.Shared.Pages;assembly=IUBH.TOR"
+    xmlns:local="clr-namespace:IUBH.TOR.Modules.Courses.Pages;assembly=IUBH.TOR"
+    xmlns:domain="clr-namespace:IUBH.TOR.Modules.Courses.Domain;assembly=IUBH.TOR"
+    xmlns:converters="clr-namespace:IUBH.TOR.Modules.Courses.Pages.Converters;assembly=IUBH.TOR"
+    x:Class="IUBH.TOR.Modules.Courses.Pages.CourseListPage"
+    x:TypeArguments="local:CourseListViewModel"
+    Visual="Material"
+    BackgroundColor="#F5F5F5"
+    Title="IUBH TOR">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Primary" Text="Sign out" Priority="0" Command="{Binding SignoutCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:CourseListStateConverter x:Key="courseStateConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView
+                x:Name="_courseList"
+                SeparatorVisibility="None"
+                BackgroundColor="Transparent"
+                IsPullToRefreshEnabled="True"
+                RefreshCommand="{Binding RefreshCommand}"
+                IsRefreshing="{Binding IsRefreshing}"
+                SelectionMode="None"
+                ItemTapped="OnCourseCellTapped">
+                <ListView.RowHeight>
+                    <OnPlatform x:TypeArguments="x:Int32">
+                        <On Platform="iOS">120</On>
+                        <On Platform="Android">130</On>
+                    </OnPlatform>
+                </ListView.RowHeight>
+                <ListView.IsVisible>
+                    <Binding Path="State" Converter="{StaticResource courseStateConverter}">
+                        <Binding.ConverterParameter>
+                            <domain:CourseListState>Default</domain:CourseListState>
+                        </Binding.ConverterParameter>
+                    </Binding>
+                </ListView.IsVisible>
+                <ListView.Header>
+                    <StackLayout Orientation="Horizontal">
+                        <Label
+                            Text="{Binding LastUpdateCheck}"
+                            FontSize="Micro"
+                            HeightRequest="30"
+                            HorizontalOptions="CenterAndExpand"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="End"
+                            VerticalOptions="Center"
+                            TextColor="SlateGray" />
+                    </StackLayout>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame Margin="15, 15, 15, 5">
+                                <StackLayout Orientation="Horizontal">
+                                    <StackLayout
+                                        HorizontalOptions="StartAndExpand"
+                                        VerticalOptions="Start">
+                                        <Label
+                                            Text="{Binding Title}"
+                                            MaxLines="1"
+                                            LineBreakMode="TailTruncation"
+                                            FontSize="Small"
+                                            FontAttributes="Bold" />
+                                        <Label
+                                            Text="{Binding ExamDate}"
+                                            FontSize="Small"
+                                            TextColor="SlateGray" />
+                                        <Label
+                                            Text="{Binding Status}"
+                                            FontSize="Small"
+                                            TextColor="SlateGray" />
+                                    </StackLayout>
+                                    <BoxView
+                                        WidthRequest="16"
+                                        HeightRequest="16"
+                                        CornerRadius="8"
+                                        HorizontalOptions="Center"
+                                        BackgroundColor="{Binding Color}"
+                                        VerticalOptions="Center" />
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.SelectCourseCommand, 
+                                                              Source={x:Reference _courseList}}"
+                                            CommandParameter="{Binding .}"
+                                            NumberOfTapsRequired="1" />
+                                    </StackLayout.GestureRecognizers>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Frame
+                VerticalOptions="CenterAndExpand"
+                HasShadow="false"
+                BackgroundColor="Transparent"
+                Margin="50, 50, 50, 50">
+                <Frame.IsVisible>
+                    <Binding Path="State" Converter="{StaticResource courseStateConverter}">
+                        <Binding.ConverterParameter>
+                            <domain:CourseListState>Loading</domain:CourseListState>
+                        </Binding.ConverterParameter>
+                    </Binding>
+                </Frame.IsVisible>
+                <StackLayout>
+                    <ActivityIndicator
+                        IsRunning="true"
+                        IsVisible="true"
+                        HeightRequest="30"
+                        VerticalOptions="CenterAndExpand"
+                        Color="#3B8E90"
+                        HorizontalOptions="CenterAndExpand" />
+                    <Label
+                        Text="Please wait while your transcript of records is being fetched from CARE. This may take a moment..."
+                        FontSize="Small"
+                        TextColor="Gray"
+                        HorizontalTextAlignment="Center"
+                        Margin="0, 10, 0, 0 " />
+                </StackLayout>
+            </Frame>
+            <Frame
+                VerticalOptions="CenterAndExpand"
+                HasShadow="false"
+                BackgroundColor="Transparent"
+                Margin="50, 50, 50, 50">
+                <Frame.IsVisible>
+                    <Binding Path="State" Converter="{StaticResource courseStateConverter}">
+                        <Binding.ConverterParameter>
+                            <domain:CourseListState>Error</domain:CourseListState>
+                        </Binding.ConverterParameter>
+                    </Binding>
+                </Frame.IsVisible>
+                <StackLayout>
+                    <Image
+                        HeightRequest="40"
+                        HorizontalOptions="Fill"
+                        Source="error.png" />
+                    <Label
+                        Text="{Binding ErrorMessage}"
+                        FontSize="Small"
+                        TextColor="Gray"
+                        HorizontalTextAlignment="Center"
+                        Margin="0, 10, 0, 0 " />
+                    <Button
+                        Text="↻ Refresh"
+                        BackgroundColor="Transparent"
+                        Command="{Binding ReInitializeCommand}"
+                        Margin="0, 20, 0, 0"
+                        TextColor="SlateGray" />
+                </StackLayout>
+            </Frame>
+            <Frame
+                VerticalOptions="CenterAndExpand"
+                HasShadow="false"
+                BackgroundColor="Transparent"
+                Margin="50, 50, 50, 50">
+                <Frame.IsVisible>
+                    <Binding Path="State" Converter="{StaticResource courseStateConverter}">
+                        <Binding.ConverterParameter>
+                            <domain:CourseListState>Empty</domain:CourseListState>
+                        </Binding.ConverterParameter>
+                    </Binding>
+                </Frame.IsVisible>
+                <StackLayout>
+                    <Image
+                        HeightRequest="40"
+                        HorizontalOptions="Fill"
+                        Source="empty.png" />
+                    <Label
+                        Text="You have not passed or been enrolled to any exams right now. Good luck for your first exam!"
+                        FontSize="Small"
+                        TextColor="Gray"
+                        HorizontalTextAlignment="Center"
+                        Margin="0, 10, 0, 0 " />
+                    <Button
+                        Text="↻ Refresh"
+                        BackgroundColor="Transparent"
+                        Command="{Binding ReInitializeCommand}"
+                        Margin="0, 20, 0, 0"
+                        TextColor="SlateGray" />
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</pages:ContentPageBase>

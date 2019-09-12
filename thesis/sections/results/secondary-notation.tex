@@ -1,0 +1,46 @@
+\subsubsection{Secondary notation}
+
+Software libraries and frameworks are tools addressing particular technical ecosystems, enabling their users to solve their own (business) problems on those platforms. However, the capabilities of those tools can always only go so far as their authors have been planning for it. In practice, developers often have to deal with problems that go far beyond the scope the tool authors had initially in mind for their products. It is therefore essential that those tools can be extended for such custom use cases. That can be difficult if, for example, specific APIs of such a tool are not publicly available and therefore not usable for customization (\cite{zibran_useful_2011}).
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Does the notation allow to be extended for individual use cases not officially covered?
+\item Is extending the notation officially encouraged, or have "hacks" to be applied?
+\end{itemize}
+
+\textbf{Evaluation}
+
+While basic examples of Fabulous often only include simple scenarios, even building the F\# version of IUBH TOR with just three different dialogs required some extensions of the default instruments. 
+
+For example, the app's model should contain session state information, so it could be determined whether the login page or the course list page should be shown after the app starts. However, changes to the session state are triggered by the login page (when logging in) and the course list page (when logging out), not through the app module itself. In order to be able to retain one single message loop for the whole application, those two pages must be able to "hook into" that loop. That could be realized by introducing a second type of messages: external messages.
+
+\begin{listing}[H]
+\caption{Fabulous: External messages}
+\begin{minted}{fsharp}
+type Msg =
+    | CourseListPageMsg of CourseListPage.Msg
+
+let update (msg: Msg) (model: Model) =
+    match msg with
+    | CourseListPageMsg msg ->
+        let m, c, em = CourseListPage.update msg model.CourseListPage
+        let model = { model with CourseListPage = m; }
+        let model, ec =
+            match em with
+            | CourseListPage.ExternalMsg.LogoutSucceeded ->
+                (fst (init false)), Cmd.ofMsgOption (notifyAboutLogout())
+        
+    model, Cmd.batch [ Cmd.map CourseListPageMsg c; ec ]
+\end{minted}
+\end{listing}
+
+This listing shows an extract of the app's update function which handles the course list page's external message, which signals that the user just logged out successfully. Also, while the parent knows about its child (the course list page), the child, on the contrary, is not aware of its parent (the app module). The contract between both is the ExternalMsg type provided by the course list page, the child.
+
+Extensions of the existing instruments are possible, even if not officially encouraged. What is encouraged, however, is to build a wrapper to enable first-class support for existing libraries and Xamarin.Forms controls\footnote{https://fsprojects.github.io/Fabulous/Fabulous.XamarinForms/views-extending.html (retrieved August 8, 2019)}.
+
+On top of that, all existing customization options provided by Xamarin.Forms can be used. Both implementations of IUBH TOR use, for example, the Material Design visual system for Android and iOS\footnote{https://devblogs.microsoft.com/xamarin/beautiful-material-design-android-ios/ (retrieved August 8, 2019)}, a set of readily prepared custom renderers that support the styling of UI elements using the Material Design system\footnote{https://material.io/ (retrieved August 8, 2019)} created by Google.
+
+The concept of custom renderers is not limited to official implementation but can be used wherever necessary for one's account. Both iOS implementations of IUBH TOR, for example, contain a custom renderer for list view cells. It makes sure a cell that has been selected by the user does not stay in its visual selected state forever. Which, unfortunately, is the default behavior.
+
+All in all, it can be stated that both Xamarin.Forms itself and Fabulous on top can be customized and extended in all sorts of ways.

@@ -1,0 +1,32 @@
+\subsection{Overview}
+
+Both implementations of IUBH TOR have been completed, each supporting the full set of features as specified in Appendix A. The source code is available on GitHub\footnote{https://github.com/aspnetde/IUBH.TOR (retrieved August 8, 2019)}.
+
+In both the C\# and the F\# implementation for iOS and Android a student would be able to authenticate against the CARE system, see their full transcript of records including all details of all courses, and get automatically notified through system notifications as soon as new information is being detected. If it was a real-world project, either version of the app could be shipped to actual students through Apple's AppStore for iOS and Google Play for Android. Screenshots of the app can be seen in Appendix B.
+
+During the time of the implementation, some "environment variables" changed, as it happens in real-world projects regularly, too. For example, the structure of the transcript of records HTML document, which is used as the data source for the app's module list, has been changed without notice by the CARE developers. Through the high coverage of automated tests for both app versions, it was possible to identify the conflicting changes through failing tests and to fix it eventually. Also, the authors of the Fabulous library, which was used for the F\# version, made the unexpected decision to restructure the library\footnote{https://github.com/fsprojects/Fabulous/pull/481 (retrieved August 8, 2019)} which made some subsequent changes inevitable in order to keep the app technically up to date. All of those necessary updates could be accomplished in a relatively short time.
+
+While successfully fulfilling the functional requirements, all of the previously defined technical scenarios could have been covered, too. The following table provides an overview of those scenarios and the particular class/module which covers the implementation.
+
+\begin{table}[H]
+\caption{IUBH TOR: Technical Scenarios}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lll@{}}
+\toprule
+Scenario & C\# Implementation & F\# Implementation \\ \midrule
+Managing a persistent user session & CredentialStorage & Authentication \\
+Exchanging data with a backend & \begin{tabular}[c]{@{}l@{}}CredentialValidator,\\ CoursePageHtmlDownloader\end{tabular} & \begin{tabular}[c]{@{}l@{}}Authentication,\\ CoursePageHtmlDownloader\end{tabular} \\
+Transforming data & CoursePageHtmlParser & CoursePageHtmlParser \\
+Persisting data permanently & CourseUpdater & App (global model) \\
+Displaying data in a list & CourseListPage & CourseListPage \\
+Displaying data on a detail dialog & CourseDetailPage & CourseDetailPage \\
+Navigation between dialogs & CourseListPage → CourseDetailPage & CourseListPage → CourseDetailPage \\
+Periodic background work + Notifications & \begin{tabular}[c]{@{}l@{}}AppDelegate.PerformFetch(),\\ DroidBackgroundSyncJob\end{tabular} & \begin{tabular}[c]{@{}l@{}}AppDelegate.PerformFetch(),\\ DroidBackgroundSyncJob\end{tabular} \\ \bottomrule
+\end{tabular}%
+}
+\tablesource{Own illustration}
+\end{table}
+
+When building a more complex application in C\#, it is usually recommended to consider using one of the common MVVM frameworks. For IUBH TOR, however, it seemed unnecessarily complicated and unreasonable, as only three different dialogs were required. Therefore view models have been implemented manually, and no framework has been used.
+
+As shown in the screenshots of both applications in Appendix B, the results look almost identical. Both apps use the Material Design visual system provided by Xamarin.Forms and both apps could make use of the same UI structure – just expressed technically differently as described in the following sections.

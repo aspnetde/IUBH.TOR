@@ -1,0 +1,72 @@
+\subsubsection{Error-proneness}
+
+A world in which software does not contain any error at all is something everyone would dream of. However, reality often is telling a different story. While not every program does require "rocket science" to be written, even small flaws in line of business applications can lead to enormous costs. That is true especially in the mobile app space, where it is usually not possible to ship fixes to a user as often and as fast as in server applications. The complex deployment and review process, enforced primarily by Apple, does not allow it.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item How likely are (runtime) errors caused by mistakes expressed in the notation? 
+\item Does the notation provide any obstacles that make it hard to test programs automatically? 
+\end{itemize}
+
+\textbf{Evaluation}
+
+In general, it seems worth considering to choose a development approach over another, which is less error-prone. \cite{ray_large_2014}, for example, found out that "There is a small but significant relationship between language class and defects. Functional languages have a smaller relationship to defects than either procedural or scripting languages."
+
+While developing the F\# version of IUBH TOR, almost all parts of the application could be covered by unit tests – including its views. That made the usage of test-driven development (\cite{beck_test_2003}) quite attractive from the beginning. 
+
+However, the weak spot of Fabulous in that regard is the testability of commands. At the time of writing, there does not exist a way to evaluate the result of a command that got triggered through the update function. 
+
+The compromise has been to introduce a naming convention (\mintinline{fsharp}{Cmd*}) for those message types that would trigger a command. This way, unit tests could be written, which make sure that a command is really triggered. When the update function then receives such a \mintinline{fsharp}{Cmd*} message, their actual command function is returned. This function itself can then be tested in isolation of the MVU lifecycle.
+
+One example is the logout functionality of IUBH TOR:
+
+\begin{listing}[H]
+\caption{Fabulous: Unit tests covering the logout functionality}
+\begin{minted}[breaklines]{fsharp}
+type ``When the logout is being started``() =
+    [<Fact>]
+    let ``The Logout Command is being dispatched``() =
+        let _, cmd, _ = CourseListPage.update CourseListPage.Msg.StartLogout (initialModel())
+        cmd |> dispatchesMessage CourseListPage.Msg.CmdLogout |> should be True
+
+type ``When the Logout Command is being executed``() =
+    [<Fact>]
+    let ``A LogoutSucceeded message is being returned when the credentials could be removed``() =
+        let remove () = Ok()
+        let result = CourseListPage.tryLogOut remove
+        result |> should equal CourseListPage.Msg.LogoutSucceeded
+        
+    [<Fact>]
+    let ``A LogoutFailed message is being returned when the credentials could not be removed``() =
+        let errorMessage = randomString()
+        let remove () = Error errorMessage
+        let result = CourseListPage.tryLogOut remove
+        result |> should equal (CourseListPage.Msg.LogoutFailed(errorMessage))
+\end{minted}
+\end{listing}
+
+When a user presses the logout button, a \mintinline{fsharp}{CmdLogout} message is being dispatched. That message is then processed by the update function, which starts the actual logout procedure by returning a command that initiates the execution of the \mintinline{fsharp}{tryLogOut} function. The only part that cannot be covered by a test is the initiation of the logout process itself:
+
+\begin{listing}[H]
+\caption{Fabulous: Extract of the global update function}
+\begin{minted}[breaklines]{fsharp}
+let update (msg: Msg) (model: Model) =
+    match msg with
+    ...
+    | CmdLogout ->
+        model, (Cmd.ofMsg (tryLogOut Authentication.tryRemoveCredentialsFromSecureStorage)), NoOp
+\end{minted}
+\end{listing}
+
+That last line must be taken care of manually, which seems to be an acceptable trade-off. 
+
+In general, the F\# version of IUBH TOR benefited from the capabilities of F\# as a language, its type system, and its compiler. Primarily features like results, options, and built-in immutability for most types turned out to be very helpful in order to prevent errors.
+
+Unfortunately, some of this comfort has been given up on by the authors of Fabulous in regards to building views. The current DSL works with a lot of optional arguments that expect objects as values. This lack of type-safety makes it, for example, possible to pass a boolean where a float is expected. Which would lead to runtime errors.
+
+In comparison, the C\# implementation of IUBH TOR suffered from some shortcomings that are natural to how Xamarin.Forms works. For example, XAML views are static and cannot be unit-tested. Finding errors and making sure they do not reappear becomes a tedious task under some circumstances, especially when a view grows over time. 
+
+What turned out to be helpful was to enable the XAML compiler which directly compiles XAML into IL. That does not only reduce startup time and the file size of the final assembly, but it also performs some compile-time checkups to ensure the XAML markup is valid (\cite{microsoft_xaml_2018}).
+
+Another part that is hardly testable and can cause unexpected side-effects during runtime is the inversion of control container\footnote{https://martinfowler.com/articles/injection.html (retrieved August 8, 2019)}. A developer must make sure that all necessary dependencies have been properly registered in the correct order. Otherwise, exceptions could be thrown because of unresolvable types, which can lead to crashes of the application.

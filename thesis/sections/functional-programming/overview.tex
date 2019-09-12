@@ -1,0 +1,86 @@
+\subsection{Overview}
+
+Finding a good and commonly accepted universal definition of functional programming is not as easy as it seems to be. \cite[39]{alexander_functional_2017}, for example, is referring next to his version to five other variants. Almost every publication on the matter delivers a slightly different interpretation of what FP might be – or not be. However, \cite{hutton_frequently_2002} can help us out here with his take:
+
+"Functional programming is a style of programming that emphasizes the evaluation of expressions, rather than execution of commands. The expressions in these language [sic!] are formed by using functions to combine basic values. A functional language is a language that supports and encourages programming in a functional style." He also notes that "it is often possible to write functional-style programs in an imperative language, and vice versa. It is then a matter of opinion whether a particular language can be described as functional or not."
+
+Which language counts as functional and which not is, in fact, part of an ongoing debate among the functional programming community. Some even see languages such as Java and C\# in that category, which is fair enough as both got a lot of functional elements such as lambda expressions added to them over the last years. More uncontroversial examples include LISP, Haskell, ML, Scheme, and of course also some more recent candidates such as Elm, Clojure, PureScript, Scala, and F\#.
+
+If it is so hard to find a standard definition of the programming paradigm, it is maybe a good idea to take a look at some core fundamentals that are commonly attributed to the functional programming paradigm in order to get a better understanding of what it defines. The more of those fundamentals a language supports or even favors, the more likely it becomes that developers accept it as a functional programming language. \cite[3]{abraham_get_2018} concentrates on three main aspects: immutability, expressions, and functions as values.
+
+\textbf{Immutability}
+
+One of the elementary operations of many programming paradigms is to change data. Especially in OOP, it is pervasive to create an object and manipulate its state over the time of its existence. This is fine for many cases but can quickly lead to problems. For example, as soon as concurrency comes into play. When an object is changed from multiple threads, the outcome quickly becomes unpredictable, erroneous, and hard to debug (\cite{bishop_checking_1996}). Instead of fighting the symptoms, the idea of immutability offers a solution at the core of the problem. If data cannot be changed but only newly created, the described effects are eliminated. F\# records, for example, are immutable by default. This also means one can rely on them always being entirely constructed, as partial construction is impossible.
+
+\begin{listing}[H]
+\caption{FP fundamentals: Immutability}
+\begin{minted}{fsharp}
+type User { Name: string }
+let user = { Name = "Leon" }
+user.Name <- "Amelie" // -> Compiler error!
+\end{minted}
+\end{listing}
+
+This would not compile, as the name property cannot be changed until explicitly marked as mutable. Also, it is not possible to create a user without providing their name.
+
+\textbf{Expressions}
+
+As the toolset of the world of imperative and object-oriented programming, statements are the primary instruments of choice to manipulate data and define a program's control flow: "The actions that a program takes are expressed in statements. Common actions include declaring variables, assigning values, calling methods, looping through collections, and branching to one or another block of code, depending on a given condition." (\cite{microsoft_statements_2015}).
+
+However, as immutable values are preferred over variables in functional programming, some alternative is needed and found in the usage of expressions. \cite{gauld_learning_nodate} notes: "Functional programming is all about expressions. In fact another way to describe FP might be to term it expression oriented programming since in FP everything reduces to an expression".
+
+But what is an expression? In a nutshell: "An expression is a construct in code that produces a value. \dots\ An expression can be trivially replaced by a function call." (\cite{microsoft_introduction_2018}).
+
+\begin{listing}[H]
+\caption{FP fundamentals: Expressions}
+\begin{minted}{fsharp}
+let add x y = x + y
+let z = add 1 2
+z = 3 // -> true
+z = z // -> true
+z = add 1 2 // -> true
+add 1 2 = 3 // -> true
+\end{minted}
+\end{listing}
+
+When passed \mintinline{fsharp}{x=1} and \mintinline{fsharp}{y=2}, the \mintinline{fsharp}{add} function returns the value \mintinline{fsharp}{3}, which is then bound to \mintinline{fsharp}{z}. \mintinline{fsharp}{z} can now be compared to other values or be replaced by another function call.
+
+\textbf{Functions as values}
+
+As \cite[151]{wlaschin_domain_2018} notes, "in most modern languages functions are first-class objects, but using functions (or lambdas) occasionally doesn't mean that you are 'doing' functional programming. The key thing about the functional programming paradigm is that functions are used \emph{everywhere}, for \emph{everything}." In order to enable this kind of programming, functions must be able to be treated as data, stored as values, passed as arguments to other functions and returned as the results of expressions (\cite[35]{harrop_f_2008}).
+
+The key concept here is that of the higher-order function: "Functions that input or output other functions or take functions as parameters" (\cite[153]{wlaschin_domain_2018}).
+
+\begin{listing}[H]
+\caption{FP fundamentals: Higher-order functions}
+\label{listing:fp_hof}
+\begin{minted}{fsharp}
+type User = { FirstName: string; LastName: string }
+
+let firstName user = user.FirstName
+let fullName user = sprintf "%s %s" user.FirstName user.LastName
+let sayHello formatter user = sprintf "Hello, %s!" (formatter user)
+
+let user = { FirstName = "Jane"; LastName = "Doe" }
+
+user |> sayHello firstName // -> Hello, Jane!
+user |> sayHello fullName // -> Hello, Jane Doe!
+\end{minted}
+\end{listing}
+
+In this example, the \mintinline{fsharp}{sayHello} function returns (the expression of) a greeting. How that greeting is formulated depends on the formatter function that is being passed to it next to the user. 
+
+\textbf{Pure functions}
+
+A fourth aspect that is worth to be mentioned is the concept of purity applied to functions. A pure function is a function that does not have any side-effects. This means, that whenever and no matter how often it is called given the same arguments, it will always return the same result (\cite{meijer_erik_2008}). Because it neither relies on external state, nor does it change it.
+
+\begin{listing}[H]
+\caption{FP fundamentals: Pure functions}
+\label{listing:fp_hof}
+\begin{minted}{fsharp}
+let formatDate1 (date:DateTime) = date.ToString("yy.MM.dd") // Pure
+let formatDate2 = DateTime.Now.ToString("yy.MM.dd") // Impure!
+\end{minted}
+\end{listing}
+
+The second function relies on the \mintinline{fsharp}{DateTime.Now} property, which will always (uncontrollably) change when it is called. This makes it impure.

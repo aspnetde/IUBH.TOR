@@ -1,0 +1,26 @@
+\subsubsection{Accessibility}
+
+Whether or not someone new to a notation can master it, depends on a wide variety of different aspects. For example, without a certain level of motivation, stamina, and self-discipline, it will be hard to get proficient in any new programming language or technology ecosystem. On the other hand, however, the success of a new notation in terms of broad acceptance and adaption by their target audience can, to a certain degree, be influenced by the creators of the notation itself. Besides some fundamental qualities like the suitability to solve the addressed problem as communicated, the notation must be "accessible" by users unfamiliar with it.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item How comprehensive are existing learning materials?
+\item How mature are tooling and the ecosystem?
+\end{itemize}
+
+\textbf{Evaluation}
+
+Trying to get started with both F\# and Fabulous at the same time will most likely be overwhelming for developers lacking basic knowledge of both the language and the library. On top of that, some basic knowledge of Xamarin.Forms and mobile application development in general is helpful. All in all, this appears to be a steep learning curve.
+
+On the other hand, getting started with F\# and Xamarin.Forms is supported by a myriad of books (e.g., Abraham, Wlaschin), blog posts\footnote{A true treasure box is https://fsharpforfunandprofit.com/ (retrieved August 8, 2019)}, recorded presentations at conferences and user group meetings, video lectures, and last but not least thousands of answered questions about F\#\footnote{https://stackoverflow.com/questions/tagged/f\%23 (retrieved August 8, 2019)} and Xamarin.Forms\footnote{https://stackoverflow.com/questions/tagged/xamarin.forms (retrieved August 8, 2019)} on Stack Overflow.
+
+At the same time, the official documentation for both F\#\footnote{https://docs.microsoft.com/en-us/dotnet/fsharp/ (retrieved August 8, 2019)} and Xamarin.Forms\footnote{https://docs.microsoft.com/en-us/xamarin/xamarin-forms/ (retrieved August 8, 2019)} is quite comprehensive and of good quality. The official documentation of Fabulous is maintained by its community of volunteers. However, at the time of writing those Fabulous docs are not as complete. But for the development of IUBH TOR, it was nonetheless possible to get started quickly. 
+
+Working with Fabulous is straight-forward for all IDEs that support Xamarin, which is Visual Studio, Visual Studio for Mac, and JetBrains Rider. The code can be edited in Visual Studio Code, too, but running and debugging a Xamarin app from there is currently not supported. JetBrains Rider turned out to be a reasonable choice. Code analysis, unit test execution, setting and evaluating breakpoints while debugging the app on iOS or Android, running Fabulous Live Update from the integrated terminal – all of that worked reliably. 
+
+However, where F\# falls short compared to C\# is the set of refactoring operations offered by all IDEs. The renaming of symbols is the only operation that works reliably. Compared to dozens of refactoring options offered especially by JetBrains Rider, this is a disadvantage that is only compensated through the powerful language features of F\# itself. 
+
+Besides, the F\# ecosystem is rather small compared to C\#. But the work on the F\# version of IUBH TOR showed its maturity. Libraries like F\# Data or FsUnit\footnote{https://fsprojects.github.io/FsUnit/ (retrieved August 8, 2019)} could be easily integrated and used. In addition, F\# can leverage large parts of the C\# ecosystem as well. For example, widespread .NET libraries like xunit\footnote{https://xunit.net/ (retrieved August 8, 2019)} could be used.
+
+Developing the C\# version of IUBH TOR worked as expected for an environment that could be considered to be one of the largest software development ecosystems worldwide. Tooling, learning materials, documentation – all of this receives much more investment by vendors like Microsoft and JetBrains, as well as the development community. That seems justified as the target audience is orders of magnitudes more significant than in the functional programming camp. E.g. there are right now more than 1.3 million questions asked\footnote{https://stackoverflow.com/questions/tagged/c\%23 (retrieved August 8, 2019)} about C\# on Stack Overflow. 

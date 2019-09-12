@@ -1,0 +1,24 @@
+\subsubsection{Visibility}
+
+Solving complex problems in a simple way is one of the most challenging tasks in software development. In order to improve long-term maintainability, an application's architecture should be structured in a way that, among other qualities, allows a developer to join the dots quickly. Therefore it is essential to have a strategy in place that allows structuring system components in a way that makes them easily accessible.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Does the notation allow to get a quick overview of the structure of the application?
+\item Are there essential details hard to understand due to encapsulation enforced by the notation?
+\end{itemize}
+
+\textbf{Evaluation}
+
+The core project of the IUBH TOR F\# implementation does not contain a single subfolder but does consist only of a dozen files. That is relatively common in the F\# space. Organizing F\# files in nested folder structures instead would make it harder to organize the solution. Because the only thing that matters to the compiler is the eventual list of files and their (full) path.
+
+Also, for pages, view, model, update, and init functions are always put together in one single file and can therefore easily be looked at at a glance. That may only become a problem when such a page file grows very large over time and contains multiple different functions, types, etcetera. But that did not happen during the the development of IUBH TOR.
+
+Services are organized into F\# modules, and each module lives in its own file, which makes it easy to discover the different services. There is no noticeable part of the F\# solution that would "obfuscate" details.
+
+In contrast, the IUBH TOR C\# project consists of many different files that needed to be organized. \cite[117]{lilienthal_langlebige_2017} suggests to "slice" an application not from a technical point of view, but rather a domain-centric one. The reasoning behind this is the idea of getting coherent modules that are easier to reason about. For example, for a specific topic ("bounded context"), everything related to it is placed in a particular location where it can easily be discovered.
+
+IUBH TOR C\# therefore contains in its core project only global infrastructure on its root level, e.g., for data access. Everything else is placed into packages that are called modules ("Authentication," "Courses," and "Shared"). Which makes it relatively easy to reason about those modules and their inner working.
+
+On a detail level, view (XAML) and view model are separated in different files and written in different languages. That makes it relatively hard to get an overview, as functionality can live either on the page, in the view model, or even in the XAML part of a view.

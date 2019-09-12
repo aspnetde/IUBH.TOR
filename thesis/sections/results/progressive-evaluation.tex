@@ -1,0 +1,22 @@
+\subsubsection{Progressive evaluation}
+
+Receiving feedback on applied changes, e.g., while developing the user interface of a cross-platform mobile application, is an elementary part of the development cycle. In the simplest case, it is, e.g., necessary to check changes made to the positioning of an element on the screen for multiple target platforms. Moreover, while the result can be satisfying on platform A, it may be different or even wrong on platform B. 
+
+Also, it may be helpful to sketch out an early version of an algorithm in a way that does set as few constraints as possible to the developer. So they can try things out without the heavy-lifting of compiling and running a full application on a target platform.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Does the notation support building UIs in an incremental way?
+\item Does the notation allow to "sketch things out" also for non-UI related code?
+\end{itemize}
+
+\textbf{Evaluation}
+
+One of the most tedious routines of working with Xamarin until recently has been to start the build and deploy cycle to see code changes "in action." Depending on the app's size and the deployment target, this would take between a couple of seconds and several minutes. However, those times are gone now in general as a couple of live update tools have been published in the recent past.
+
+Fabulous ships with "Live Update" which allows reloading the application after changes were made to the F\# code. During the development of IUBH TOR that worked for both iOS and Android and both simulator/emulator and real physical devices. However, only changes made to the view function were reflected reliably. Changes made to the model and other parts of the codebase sometimes required to start a new debug cycle. Also restoring the state did not work well, so some hacks needed to be applied (like temporarily commenting out code in order to get the right page loaded).
+
+But working on the UI was only one part of the development process that was being done incrementally in small iterations. Other parts included the development of algorithms, learning how to apply different libraries (e.g., F\# Data), and getting to know concepts like railway-oriented programming\footnote{https://fsharpforfunandprofit.com/rop/ (retrieved August 8, 2019)}. All of this could be done comfortably by using the previously mentioned F\# Interactive console and F\# Scripts. 
+
+For C\#, the usage of "HotReload"\footnote{https://github.com/AndreiMisiukevich/HotReload (retrieved August 8, 2019)} has proven to be more reliable than Fabulous' "Live Update". The open-source tool reacts to changes made to XAML views and reloads them "in place," so not the whole application is being reloaded. However, proven unreliable has the XAML preview in Visual Studio for Mac. This tool tries to render a view depending on the XAML markup, but it fails to do so as soon as custom data-bindings are being applied.

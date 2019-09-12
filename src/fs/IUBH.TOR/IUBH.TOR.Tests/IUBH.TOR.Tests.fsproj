@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Utilities.fs" />
+        <Compile Include="DemoData.fs" />
+        <Compile Include="CourseSpecs.fs" />
+        <Compile Include="AuthenticationSpecs.fs" />
+        <Compile Include="CoursePageHtmlDownloaderSpecs.fs" />
+        <Compile Include="CoursePageHtmlParserSpecs.fs" />
+        <Compile Include="CourseUpdaterSpecs.fs" />
+        <Compile Include="CourseLoaderSpecs.fs" />
+        <Compile Include="LoginPageSpecs.fs" />
+        <Compile Include="CourseListPageSpecs.fs" />
+        <Compile Include="AppSpecs.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FsUnit.xUnit" Version="3.4.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+        <PackageReference Include="FSharp.Core" Version="4.6.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\IUBH.TOR\IUBH.TOR.fsproj" />
+    </ItemGroup>
+
+</Project>

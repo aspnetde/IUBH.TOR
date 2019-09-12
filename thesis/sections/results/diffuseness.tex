@@ -1,0 +1,40 @@
+\subsubsection{Diffuseness}
+
+The less code needs to be written to solve a particular task, the less code needs to be maintained and therefore debugged, read, and understood in the future (\cite{atwood_best_2007}). This is even more important as developers usually only spend roughly 10\% of their time writing code, but 20\% understanding a problem and astonishing 70\% reading code (\cite[69]{lilienthal_langlebige_2017}). 
+
+When a notation is complex or bloated, understanding and reading code becomes a tedious task. Therefore notations that allow concisely expressing things are seen as beneficial long-term, even when they seem hard to learn in the beginning.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Does the notation allow to express things on a micro-level concisely and efficiently?
+\item On a macro level, does the notation cause the developer to write much boilerplate code? 
+\end{itemize}
+
+\textbf{Evaluation}
+
+F\# code is considered to be more concise than C\# code (\cite[xiii]{liu_f_2013}), which is a characteristic of many functional programming languages (\cite{nanz_comparative_2015}). For example, \cite[49]{odersky_programming_2008} state, that "a \dots\ conservative estimate would be that a typical Scala program should have about half the number of lines of the same program written in Java."
+    
+This could have a significant impact on the economics of a software development project. Not only can less code be written in less time, it will with high probability also contain fewer bugs (\cite{ray_large_2014}).
+
+\begin{table}[H]
+\centering
+\caption{IUBH TOR: Lines of Code}
+\label{table:loc}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} lrrrr}
+\toprule
+Language & Number of files\tablefootnote{Counted by using cloc. Only files within /src/cs for C\# and within /src/fs/ for F\# were evaluated. Resource.designer.cs was deleted before the test was run for both the C\# and the F\# Android project, as it gets automatically generated. Also, TinyIoC.cs contained in the C\# core project was deleted as it was copied to the project as supposed by the library's author, but not written for the app itself.} & Blank lines & Comment lines & Code lines \\ \midrule
+C\#      & 88    & 1.047   & 452      & 4.855 \\
+XAML     & 4     & 10     & 0        & 355  \\ \midrule
+F\#      & 28    & 457    & 223      & 2.121 \\ \bottomrule
+\end{tabular*}
+\tablesource{Own illustration}
+\end{table}
+
+As shown in table \ref{table:loc}, the F\# implementation of IUBH TOR uses 28 files and 2.121 lines of code, whereas the C\# implementation consists of 92 different files containing 5.210 lines of code (C\# + XAML combined). In other words: the C\# code base is almost 2,5x as large as the F\# equivalent.
+
+While F\# code, in general, is much more terse than C\# code, building IUBH TOR with the Fabulous library and its view DSL clearly shows the advantages in particular. For example, when taking a look at the course detail page which does not contain advanced logic but only renders the information of a course, the F\# implementation consists of only a single file and 45 lines of code. Whereas the C\# implementation uses three files containing 169 lines of code in sum, not included the usage of the shared \mintinline{fsharp}{HideEmptyDataConverter} class.
+
+Aside from the UI implementation, both alternatives suffer from some boilerplate code that needs to be written. For F\# and Fabulous, implementing the nested navigation stack (list → detail) required some additional message types and mapping operations inside the app's update function. That was necessary in order to preserve the single message loop the MVU architecture is based on. 
+
+For C\#, achieving a scalable architecture requires some boilerplate code to be written around enabling the inversion of control container to work. For example, every module needs to take care of registering its dependencies to the global registry.

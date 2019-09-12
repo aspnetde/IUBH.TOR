@@ -1,0 +1,28 @@
+\subsubsection{Abstraction}
+
+For \cite{jackson_software_2006} "abstractions are the essence of software development." He defines it as conceptual structures that are either discovered in the problem domain (e.g., a typeface family), invented by the designer (e.g., a drawing layer), or something in between (e.g., a spreadsheet). He further states that good software uses robust and flexible abstractions that provide a clear model for the user and clean interfaces for developers.
+
+\textbf{Questions}
+
+\begin{itemize}
+\item Does the notation add any new layer of abstraction on top of existing abstractions?
+\item How easy or difficult are the abstractions provided by the notation to work with?
+\end{itemize}
+
+\textbf{Evaluation}
+
+In the domain of cross-platform mobile app development, abstractions are ubiquitous. The most crucial goal of tools like Xamarin is to minimize development efforts by enabling developers to share functionality across different platforms. 
+
+Especially when it comes to code-sharing for building user interfaces, the notation offered to developers can only consist of the lowest common denominator. That naturally leads to new concepts that live on top of the native target platforms, e.g., a Xamarin.Forms entry element\footnote{https://docs.microsoft.com/de-de/dotnet/api/xamarin.forms.entry (retrieved August 8, 2019)} that gets rendered as an UITextField\footnote{https://developer.apple.com/documentation/uikit/uitextfield (retrieved August 8, 2019)} on iOS and an EditText element on Android\footnote{https://developer.android.com/reference/android/widget/EditText (retrieved August 8, 2019)}.
+
+Xamarin.Forms itself has already introduced a considerable complex set of techniques, like custom renderers and the visual system. In addition, its layout engine contains some hand-made implementations that are relatively hard to maintain, as Jason Smith, one of the original authors, stated: "I regret that I have to maintain a layout system. It's a very difficult piece of code to keep running. There are all sorts of edge-cases you have to cover. And there are... I don't think we made the wrong call. I think we made the far harder call." (\cite{smith_gone_2014}).
+
+Those abstractions can clearly define an entry barrier. But it does not end at that point. Even when a developer did learn all those concepts, there is a high chance that they will sooner or later need to implement some details of their application "bare-metal" on one or multiple native platforms. For example, when existing native components should be integrated, or some platform-specific customizations need to be made. Therefore they need to understand what is happening under the level of abstraction they are usually dealing with, too.
+
+When working with Fabulous, also, much complex wiring is happening in the background in order to implement the MVU architecture on top of Xamarin.Forms. For example, the uni-directional dataflow is not directly visible – functions may seem to be called "magically" when messages get dispatched. In order to understand what is happening and how all those functions relate, at least a basic understanding of MVU is needed.
+
+But that alone will not be sufficient, as Fabulous does closely map Xamarin.Forms's techniques to create user interfaces. Therefore it brings its own view DSL, which, from a developer's perspective, needs to be understood and learned as well. Furthermore, that view DSL must be maintained by the Fabulous authors. Which means that for every Xamarin.Forms update they need to match the additions and changes made to Xamarin.Forms on the Fabulous side.
+
+Besides, with Fabulous.SimpleElements\footnote{https://github.com/Zaid-Ajaj/fabulous-simple-elements (retrieved August 8, 2019)} there does at least one additional library exist that tries to simplify that view DSL. It claims to provide especially easy API discoverability by enabling the developer to "dot through" the code and see what attributes can be used. The downside: When using this library, the UI code would be at least four levels of abstraction off from the original platform code (Platform → Xamarin.Forms → Fabulous → Fabulous.SimpleElements).
+
+During the implementation of both versions of IUBH TOR, however, both building the UI with XAML and with the Fabulous DSL turned out to work generally unproblematically.

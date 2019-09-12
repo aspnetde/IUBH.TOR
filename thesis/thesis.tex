@@ -1,0 +1,100 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage{fontspec}
+\usepackage{parskip}
+\usepackage{caption}
+\captionsetup[listing]{position=top}
+\usepackage[newfloat,cache=false,outputdir=.texpadtmp]{minted}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage[hang,multiple,bottom]{footmisc} 
+\usepackage{tocbibind}
+\usepackage{enumitem}
+\usepackage{tablefootnote}
+\usepackage{float}
+\usepackage{etoolbox}
+
+\AfterEndEnvironment{minted}{\vspace{-10pt}}
+\AfterEndEnvironment{figure}{\vspace{-15pt}}
+\AfterEndEnvironment{table}{\vspace{-15pt}}
+
+\setitemize{noitemsep}
+
+\usepackage[
+  backend=biber
+ ,style=apa
+ ,sorting=nyvt
+ ,sortcites=false
+ ,block=none
+ ,url=true
+ ,minnames=1
+ ,maxnames=4
+]{biblatex}
+
+\def\doctype{Bachelor's Thesis in Business Informatics}
+\def\title{Suitability of functional programming for the development of mobile applications: A comparison of F\# and C\# involving Xamarin}
+\def\author{Thomas Bandt}
+\def\date{August 8, 2019}
+
+\DefineBibliographyStrings{english}{%
+  urlseen = {accessed on},
+}
+
+\setmainfont{Arial}
+\linespread{1.5}
+
+\usemintedstyle{xcode}
+\setminted{frame=single,framesep=3mm,fontsize=\small,baselinestretch=1}
+
+\addbibresource{references.bib}
+\DeclareFieldFormat{urldate}{retrieved at #1}
+
+\newlist{abbrv}{itemize}{1}
+\setlist[abbrv,1]{label=,labelwidth=1in,align=parleft,itemsep=0.1\baselineskip,leftmargin=!}
+
+% https://tex.stackexchange.com/a/246285
+\graphicspath{{images/}}
+
+\renewcommand{\footnotesize}{\linespread{1}\fontsize{10pt}{12pt}\selectfont}
+\newcommand{\source}[1]{\caption*{\footnotesize Source: {#1}.} }
+\newcommand{\tablesource}[1]{\vspace{10pt} \caption*{\footnotesize Source: {#1}} }
+
+\begin{document}
+\pagenumbering{Roman}
+
+\include{sections/_meta/abstract}
+
+\pagebreak\tableofcontents
+\pagebreak\listoffigures
+\pagebreak\listoftables
+\pagebreak\listoflistings
+
+\pagebreak\include{sections/_meta/abbreviations}
+
+\pagebreak
+
+\pagenumbering{arabic}
+
+\input{sections/introduction/introduction}
+\input{sections/xamarin/xamarin}
+\input{sections/functional-programming/functional-programming}
+\input{sections/functional-programming-with-xamarin/functional-programming-with-xamarin}
+\input{sections/comparison-setup/comparison-setup}
+\input{sections/results/results}
+\input{sections/conclusion/conclusion}
+
+\newpage
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+\printbibliography
+\addcontentsline{toc}{section}{References}
+
+\newpage
+\input{sections/_meta/appendix-a}
+\newpage
+\input{sections/_meta/appendix-b}
+
+\end{document}
+
